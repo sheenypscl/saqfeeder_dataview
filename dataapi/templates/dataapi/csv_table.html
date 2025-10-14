@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SAQ Feeder Data Viewer</title>
+  <link rel="stylesheet" href="{% static 'dataapi/css/csv_table.css' %}">
+
+  <link rel="stylesheet" href="{% static 'dataapi/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dataapi/css/style.css' %}">
+</head>
+<body>
+<div class="container mt-5">
+  <h2>SAqFeeder Data Viewer</h2>
+
+  <!-- Year Selector -->
+  <form method="get" class="form-inline mb-4">
+    <label for="year" class="mr-2 font-weight-bold">Select Year:</label>
+    <select id="year" name="year" class="form-control mr-2" onchange="this.form.submit()">
+      {% for y in years %}
+        <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <!-- Month Tabs -->
+  <ul class="nav nav-tabs">
+    {% for m, name in months %}
+        <li class="nav-item">
+            <a class="nav-link {% if m == selected_month %}active{% endif %}"
+                href="?year={{ selected_year }}&month={{ m }}">
+            {{ name }}
+            </a>
+        </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Table Display -->
+  <div class="table-responsive mt-4">
+    {{ table_html|safe }}
+  </div>
+</div>
+
+<script src="{% static 'dataapi/js/script.js' %}"></script>
+</body>
+</html>
