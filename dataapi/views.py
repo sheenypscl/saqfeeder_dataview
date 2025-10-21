@@ -11,7 +11,7 @@ def test_view(request):
 
 def csv_table_view(request):
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_folder = base_dir  
+    # data_folder = base_dir  
 
     data_dir = os.path.join(settings.BASE_DIR, 'data')
 
@@ -34,17 +34,39 @@ def csv_table_view(request):
 
     # Get selected year and month from URL query
     selected_year = request.GET.get('year', '2025')
-    selected_month = request.GET.get('month', '10')
+    selected_month = request.GET.get('month', '01')
 
     # Build CSV file name
     csv_filename = f"{selected_year}-{selected_month}.csv"
-    csv_path = os.path.join(data_dir, csv_filename)
+    csv_path = os.path.join(settings.CSV_DIR, csv_filename)
 
     # Read the CSV if it exists
     table_html = "<p class='text-muted'>No data available for this month.</p>"
+    
     if os.path.exists(csv_path):
         df = pd.read_csv(csv_path)
-        table_html = df.to_html(classes="table table-striped table-bordered", index=False)
+
+        if "SensorID" in df.columns:
+            df = df.sort_values(by="SensorID", ascending=False)
+
+        # Add "View Image" button column
+        df["Image"] = df["SensorID"].apply(
+            lambda sid: (
+                f"<button type='button' class='btn btn-link p-0 view-image-btn' "
+                f"data-toggle='modal' data-target='#imageModal' data-sensorid='{sid}'"
+                f"data-image='/static/dataapi/images/{sid}.JPG'>"
+                f"View image</button>"
+            )
+        )
+
+        table_html = df.to_html(
+            classes="table table-striped table-bordered text-center align-middle", 
+            index=False, 
+            escape=False,
+            table_id="data-table"
+            )
+        
+        # table_html = table_html.replace('<table ', '<table id="data-table" ')
 
     context = {
         "years": years,
