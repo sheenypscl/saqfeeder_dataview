@@ -11,13 +11,19 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# External folder
-EXTERNAL_DATA_DIR = Path("/saqfeeder_files")
+# On Windows (development), saqfeeder_files is outside the project
+if os.name == "nt":
+    # Go one level up from BASE_DIR, then into saqfeeder_files
+    EXTERNAL_DATA_DIR = BASE_DIR.parent / "saqfeeder_files"
+else:
+    # On Raspberry Pi, it's mounted at root
+    EXTERNAL_DATA_DIR = Path("/saqfeeder_files")
 CSV_DIR = EXTERNAL_DATA_DIR / "csv"
 IMAGE_DIR = EXTERNAL_DATA_DIR / "images"
 

@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>pH Calibration</title>
+  <link rel="stylesheet" href="{% static 'dataapi/css/bootstrap.min.css' %}">
+</head>
+<body class="p-4">
+
+<div id="calibration-container" class="text-center mt-5">
+  <!-- Step 0: Intro -->
+  <div id="step-intro">
+    <h3>Calibration Mode</h3>
+    <p>Do you want to enter calibration mode?</p>
+    <button class="btn btn-primary" onclick="showStep('ph')">Enter</button>
+    <button class="btn btn-secondary" onclick="skipAll()">Skip</button>
+  </div>
+
+  <!-- Step 1: pH Calibration -->
+  <div id="step-ph" style="display:none;">
+    <h4>pH Sensor Calibration</h4>
+    <button id="ph-start" class="btn btn-success" onclick="runCalibration('ph')">Start</button>
+    <button id="ph-skip" class="btn btn-secondary" onclick="showStep('do')">Skip</button>
+    <pre id="ph-output" class="mt-3 text-center"></pre>
+  </div>
+
+  <!-- Step 2: DO Calibration -->
+  <div id="step-do" style="display:none;">
+    <h4>Dissolved Oxygen (DO) Calibration</h4>
+    <button id="do-start" class="btn btn-success" onclick="runCalibration('do')">Start</button>
+    <button id="do-skip" class="btn btn-secondary" onclick="showStep('ec')">Skip</button>
+    <pre id="do-output" class="mt-3 text-center"></pre>
+  </div>
+
+  <!-- Step 3: EC Calibration -->
+  <div id="step-ec" style="display:none;">
+    <h4>Electrical Conductivity (EC) Calibration</h4>
+    <button id="ec-start" class="btn btn-success" onclick="runCalibration('ec')">Start</button>
+    <button id="ec-skip" class="btn btn-secondary" onclick="finishCalibration()">Skip</button>
+    <pre id="ec-output" class="mt-3 text-center"></pre>
+  </div>
+
+  <!-- Step 4: Done -->
+  <div id="step-done" style="display:none;">
+    <h4>Calibration Complete!</h4>
+    <p>All sensors are now calibrated.</p>
+     <button id="csv-table" class="btn btn-success" onclick="openCSVViewer()">Data Collection Viewer</button>
+  </div>
+</div>
+
+
+
+
+  <!-- <div class="container">
+    <h4>pH Calibration</h4>
+    <p id="instruction">Place the pH probe into the pH 4.00 buffer (ACID) solution.</p>
+    <button id="calibrate-ph-btn" class="btn btn-primary">Start Acid Calibration</button>
+
+    <div class="mt-3">
+      <pre id="result" class="border p-2 bg-light"></pre>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="container">
+    <h4>Dissolved Oxygen</h4>
+    <p id="instruction">Continuously read temperature, voltage, and compute DO</p>
+    <button id="calibrate-do-btn" class="btn btn-primary">Start DO measurement</button>
+
+    <div class="mt-3">
+      <pre id="result-do" class="border p-2 bg-light"></pre>
+    </div>
+  </div>
+
+<br>
+
+  <div class="container">
+    <h4>Electrical Conductivity</h4>
+    <p id="instruction">Dip the sensor into calibration solutions.</p>
+    <button id="calibrate-ec-btn" class="btn btn-primary">Start EC measurement</button>
+
+    <div class="mt-3">
+      <pre id="result-ec" class="border p-2 bg-light"></pre>
+    </div>
+  </div> -->
+
+  <script src="{% static 'dataapi/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'dataapi/js/calib_sensor.js' %}"></script>
+ 
+</body>
+</html>

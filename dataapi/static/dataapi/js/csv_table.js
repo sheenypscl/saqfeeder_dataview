@@ -133,3 +133,10 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+
+// calibration for ph
+function send(state) {
+      fetch(`/api/ph_calib/?state=${state}`)
+        .then(r => r.json())
+        .then(d => console.log("Pin", d.pin, "set", d.state));
+    }

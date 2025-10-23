@@ -1,9 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
+from .ph_sensor import PHCalibrator, DOCalibrator, ECCalibrator
+# from gpiozero import OutputDevice
 
 import pandas as pd
-import os
+import os, io, sys
 
 def test_view(request):
     data = {"message": "Hello, your API is working!"}
@@ -77,3 +79,68 @@ def csv_table_view(request):
     }
 
     return render(request, "dataapi/csv_table.html", context)
+
+
+
+def run_calibration(calibrator_class):
+    buffer = io.StringIO()
+    sys_stdout = sys.stdout
+    sys.stdout = buffer
+
+    try:
+        calibrator = calibrator_class()
+        calibrator.main()
+    except Exception as e:
+        sys.stdout = sys_stdout
+        return JsonResponse({"error": str(e)})
+    finally:
+        sys.stdout = sys_stdout
+
+    output = buffer.getvalue()
+    return JsonResponse({"result": output})
+
+
+def calibration_acid_view(request):
+    return run_calibration(PHCalibrator)
+
+
+def calibration_do_view(request):
+    return run_calibration(DOCalibrator)
+
+
+def calibration_ec_view(request):
+    return run_calibration(ECCalibrator)
+
+
+
+#for pH value GPIO 17
+# pin17 = OutputDevice(17)
+# def ph_calib(request):
+#     state = request.GET.get("state")
+#     if state == "on":
+#         pin17.on()
+#     elif state == "off":
+#         pin17.off()
+
+#     return JsonResponse({"pin": 17, "state": state})
+
+def calibration_page(request):
+    return render(request, "dataapi/calibration.html")
+
+# # ph sensor
+# def calibrate_acid_view(request):
+#     calibrator = PHCalibrator()
+#     result = calibrator.calibrate_acid()
+#     return JsonResponse({"message": result})
+
+# # DO sensor
+# def calibrate_do_view(request):
+#     calibrator = DOCalibrator()
+#     result = calibrator.calibrate_do()
+#     return JsonResponse({"message": result})
+
+# # EC sensor
+# def calibrate_ec_view(request):
+#     calibrator = ECCalibrator()
+#     result = calibrator.calibrate_ec()
+#     return JsonResponse({"message": result})
